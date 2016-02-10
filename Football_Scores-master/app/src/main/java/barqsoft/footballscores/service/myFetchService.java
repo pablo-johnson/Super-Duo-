@@ -29,15 +29,20 @@ import barqsoft.footballscores.R;
 /**
  * Created by yehya khaled on 3/2/2015.
  */
-public class myFetchService extends IntentService {
-    public static final String LOG_TAG = "myFetchService";
+public class MyFetchService extends IntentService {
+    public static final String LOG_TAG = "MyFetchService";
 
-    public myFetchService() {
-        super("myFetchService");
+    public MyFetchService() {
+        super("MyFetchService");
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        getData("n2");
+        getData("p2");
+    }
+
+    public void getData() {
         getData("n2");
         getData("p2");
     }
@@ -49,7 +54,6 @@ public class myFetchService extends IntentService {
         //final String QUERY_MATCH_DAY = "matchday";
 
         Uri fetch_build = Uri.parse(BASE_URL).buildUpon().appendQueryParameter(QUERY_TIME_FRAME, timeFrame).build();
-        //Log.v(LOG_TAG, "The url we are looking at is: "+fetch_build.toString()); //log spam
         HttpURLConnection m_connection = null;
         BufferedReader reader = null;
         String jsonData = null;
@@ -224,7 +228,7 @@ public class myFetchService extends IntentService {
             values.toArray(insert_data);
             int inserted_data = mContext.getContentResolver().bulkInsert(DatabaseContract.BASE_CONTENT_URI, insert_data);
 
-            Log.v(LOG_TAG,"Succesfully Inserted : " + String.valueOf(inserted_data));
+            Log.v(LOG_TAG, "Succesfully Inserted : " + String.valueOf(inserted_data));
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage());
         }

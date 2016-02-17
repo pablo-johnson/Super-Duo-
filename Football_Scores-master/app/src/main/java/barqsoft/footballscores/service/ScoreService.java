@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import barqsoft.footballscores.DatabaseContract;
+import barqsoft.footballscores.MyAppWidgetProvider;
 import barqsoft.footballscores.R;
 import barqsoft.footballscores.Score;
 
@@ -24,7 +25,7 @@ public class ScoreService extends RemoteViewsService {
      * To be implemented by the derived service to generate appropriate factories for
      * the data.
      *
-     * @param intent
+     * @param intent intent
      */
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
@@ -46,7 +47,7 @@ public class ScoreService extends RemoteViewsService {
          */
         @Override
         public void onCreate() {
-            updateElements();
+            //updateElements();
         }
 
         /**
@@ -80,22 +81,20 @@ public class ScoreService extends RemoteViewsService {
         @Override
         public RemoteViews getViewAt(int position) {
             Score score = scoreItems.get(position);
-            RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.scores_list_item);
+            RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.widget_list_item);
             rv.setTextViewText(R.id.home_name, score.getHomeName());
             rv.setTextViewText(R.id.away_name, score.getAwayName());
             rv.setTextViewText(R.id.data_textview, score.getDate());
             rv.setTextViewText(R.id.score_textview, score.getScore());
-            rv.setImageViewResource(R.id.home_crest, score.getHomeCrestImageResource());
-            rv.setImageViewResource(R.id.away_crest, score.getAwayCrestImageResource());
             rv.setContentDescription(R.id.home_crest, score.getHomeName());
             rv.setContentDescription(R.id.away_crest, score.getAwayName());
 
 
             Bundle extras = new Bundle();
-            //extras.putInt(ScoresWidgetProvider.EXTRA_ITEM, position);
+            extras.putInt(MyAppWidgetProvider.EXTRA_ITEM, position);
             Intent fillInIntent = new Intent();
             fillInIntent.putExtras(extras);
-            rv.setOnClickFillInIntent(R.id.container, fillInIntent);
+            rv.setOnClickFillInIntent(R.id.itemContainer, fillInIntent);
             return rv;
         }
 
@@ -120,14 +119,14 @@ public class ScoreService extends RemoteViewsService {
         }
 
         private void updateElements() {
-            MyFetchService myFetchService = new MyFetchService();
-            myFetchService.getData();
             Cursor cursor = mContext.getContentResolver().query(DatabaseContract.BASE_CONTENT_URI,
-                    null, null, null, null);
-            while (cursor.moveToNext()) {
-                scoreItems.add(new Score(cursor));
+                    null, null, null, DatabaseContract.scores_table.DATE_COL);
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    scoreItems.add(new Score(cursor));
+                }
+                cursor.close();
             }
-            cursor.close();
         }
     }
 }

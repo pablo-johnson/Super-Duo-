@@ -19,7 +19,7 @@ public class Score {
 
     public Score(Cursor cursor) {
         homeName = cursor.getString(ScoresAdapter.COL_HOME);
-        awayName = cursor.getString(ScoresAdapter.COL_MATCHTIME);
+        awayName = cursor.getString(ScoresAdapter.COL_AWAY);
         date = cursor.getString(ScoresAdapter.COL_DATE);
         score = Utilies.getScores(cursor.getInt(ScoresAdapter.COL_HOME_GOALS), cursor.getInt(ScoresAdapter.COL_AWAY_GOALS));
         matchId = cursor.getDouble(ScoresAdapter.COL_ID);

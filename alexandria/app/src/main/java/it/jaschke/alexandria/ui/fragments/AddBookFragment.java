@@ -1,7 +1,6 @@
 package it.jaschke.alexandria.ui.fragments;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -17,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import it.jaschke.alexandria.R;
 import it.jaschke.alexandria.data.AlexandriaContract;
@@ -27,17 +25,11 @@ import it.jaschke.alexandria.ui.activities.MainActivity;
 
 
 public class AddBookFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    private static final String TAG = "INTENT_TO_SCAN_ACTIVITY";
     public static final int OPEN_SCANNER = 3;
     private EditText ean;
     private final int LOADER_ID = 1;
     private View rootView;
     private final String EAN_CONTENT = "eanContent";
-    private static final String SCAN_FORMAT = "scanFormat";
-    private static final String SCAN_CONTENTS = "scanContents";
-
-    private String mScanFormat = "Format:";
-    private String mScanContents = "Contents:";
     private NavigationDrawerFragment.NavigationDrawerCallbacks mCallbacks;
 
 
@@ -140,7 +132,6 @@ public class AddBookFragment extends Fragment implements LoaderManager.LoaderCal
 
         if (savedInstanceState != null) {
             ean.setText(savedInstanceState.getString(EAN_CONTENT));
-            ean.setHint("");
         }
 
         return rootView;
@@ -175,24 +166,51 @@ public class AddBookFragment extends Fragment implements LoaderManager.LoaderCal
             return;
         }
 
+        TextView bookTitleView = (TextView) rootView.findViewById(R.id.bookTitle);
         String bookTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
-        ((TextView) rootView.findViewById(R.id.bookTitle)).setText(bookTitle);
+        if (bookTitle != null) {
+            bookTitleView.setText(bookTitle);
+            bookTitleView.setVisibility(View.VISIBLE);
+        } else {
+            bookTitleView.setVisibility(View.GONE);
+        }
 
+        TextView bookSubTitleView = (TextView) rootView.findViewById(R.id.bookSubTitle);
         String bookSubTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.SUBTITLE));
-        ((TextView) rootView.findViewById(R.id.bookSubTitle)).setText(bookSubTitle);
+        if (bookSubTitle != null) {
+            bookSubTitleView.setText(bookSubTitle);
+            bookSubTitleView.setVisibility(View.VISIBLE);
+        } else {
+            bookSubTitleView.setVisibility(View.GONE);
+        }
 
+
+        TextView authorsView = (TextView) rootView.findViewById(R.id.authors);
         String authors = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
-        String[] authorsArr = authors.split(",");
-        ((TextView) rootView.findViewById(R.id.authors)).setLines(authorsArr.length);
-        ((TextView) rootView.findViewById(R.id.authors)).setText(authors.replace(",", "\n"));
+        if (authors != null) {
+            String[] authorsArr = authors.split(",");
+            authorsView.setLines(authorsArr.length);
+            authorsView.setText(authors.replace(",", "\n"));
+            authorsView.setVisibility(View.VISIBLE);
+        } else {
+            authorsView.setVisibility(View.GONE);
+        }
+
+
         String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
-        if (Patterns.WEB_URL.matcher(imgUrl).matches()) {
+        if ((imgUrl != null) && Patterns.WEB_URL.matcher(imgUrl).matches()) {
             new DownloadImage((ImageView) rootView.findViewById(R.id.bookCover)).execute(imgUrl);
             rootView.findViewById(R.id.bookCover).setVisibility(View.VISIBLE);
         }
 
+        TextView categoriesView = (TextView) rootView.findViewById(R.id.categories);
         String categories = data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
-        ((TextView) rootView.findViewById(R.id.categories)).setText(categories);
+        if (categories != null) {
+            categoriesView.setText(categories);
+            categoriesView.setVisibility(View.VISIBLE);
+        } else {
+            categoriesView.setVisibility(View.GONE);
+        }
 
         rootView.findViewById(R.id.save_button).setVisibility(View.VISIBLE);
         rootView.findViewById(R.id.delete_button).setVisibility(View.VISIBLE);

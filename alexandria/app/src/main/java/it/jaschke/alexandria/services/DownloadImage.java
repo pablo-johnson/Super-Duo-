@@ -8,6 +8,8 @@ import android.widget.ImageView;
 
 import java.io.InputStream;
 
+import it.jaschke.alexandria.R;
+
 /**
  * Created by saj on 11/01/15.
  */
@@ -32,7 +34,11 @@ public class DownloadImage extends AsyncTask<String, Void, Bitmap> {
     }
 
     protected void onPostExecute(Bitmap result) {
-        bmImage.setImageBitmap(result);
+        if (result != null) {
+            bmImage.setImageBitmap(result);
+        } else {
+            bmImage.setBackgroundResource(R.drawable.ic_launcher);
+        }
     }
 }
 

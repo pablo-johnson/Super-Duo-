@@ -8,6 +8,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -73,28 +74,28 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     @Override
     public void onNavigationDrawerItemSelected(int position) {
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment nextFragment;
 
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         switch (position) {
             default:
             case 0:
                 nextFragment = new ListOfBooksFragment();
+                ft.addToBackStack(null);
                 break;
             case 1:
                 nextFragment = new AddBookFragment();
+                ft.addToBackStack(null);
                 break;
             case 2:
                 nextFragment = new AboutFragment();
+                ft.addToBackStack(null);
                 break;
             case AddBookFragment.OPEN_SCANNER:
                 nextFragment = new ScannerFragment();
 
         }
-
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, nextFragment)
-                .commit();
+        ft.replace(R.id.container, nextFragment).commit();
     }
 
     public void setTitle(int titleId) {
@@ -200,14 +201,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         return (getApplicationContext().getResources().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK)
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (getSupportFragmentManager().getBackStackEntryCount() < 2) {
-            finish();
-        }
-        super.onBackPressed();
     }
 
 

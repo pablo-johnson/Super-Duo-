@@ -1,4 +1,4 @@
-package it.jaschke.alexandria;
+package it.jaschke.alexandria.ui.activities;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -17,11 +17,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import it.jaschke.alexandria.R;
 import it.jaschke.alexandria.api.Callback;
+import it.jaschke.alexandria.ui.fragments.AboutFragment;
+import it.jaschke.alexandria.ui.fragments.AddBookFragment;
+import it.jaschke.alexandria.ui.fragments.BookDetailFragment;
+import it.jaschke.alexandria.ui.fragments.ListOfBooksFragment;
+import it.jaschke.alexandria.ui.fragments.NavigationDrawerFragment;
+import it.jaschke.alexandria.ui.fragments.ScannerFragment;
+import me.dm7.barcodescanner.zbar.Result;
 
 
-public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks, Callback {
+public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks, Callback, ScannerFragment.ScannerCallback {
 
+    public static final String SCAN_RESULT = "scanResult";
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -41,15 +50,15 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         IS_TABLET = isTablet();
-        if(IS_TABLET){
+        if (IS_TABLET) {
             setContentView(R.layout.activity_main_tablet);
-        }else {
+        } else {
             setContentView(R.layout.activity_main);
         }
 
         messageReciever = new MessageReciever();
         IntentFilter filter = new IntentFilter(MESSAGE_EVENT);
-        LocalBroadcastManager.getInstance(this).registerReceiver(messageReciever,filter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(messageReciever, filter);
 
         navigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -57,7 +66,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
         // Set up the drawer.
         navigationDrawerFragment.setUp(R.id.navigation_drawer,
-                    (DrawerLayout) findViewById(R.id.drawer_layout));
+                (DrawerLayout) findViewById(R.id.drawer_layout));
     }
 
     @Override
@@ -66,17 +75,19 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment nextFragment;
 
-        switch (position){
+        switch (position) {
             default:
             case 0:
-                nextFragment = new ListOfBooks();
+                nextFragment = new ListOfBooksFragment();
                 break;
             case 1:
-                nextFragment = new AddBook();
+                nextFragment = new AddBookFragment();
                 break;
             case 2:
-                nextFragment = new About();
+                nextFragment = new AboutFragment();
                 break;
+            case AddBookFragment.OPEN_SCANNER:
+                nextFragment = new ScannerFragment();
 
         }
 
@@ -135,13 +146,13 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     @Override
     public void onItemSelected(String ean) {
         Bundle args = new Bundle();
-        args.putString(BookDetail.EAN_KEY, ean);
+        args.putString(BookDetailFragment.EAN_KEY, ean);
 
-        BookDetail fragment = new BookDetail();
+        BookDetailFragment fragment = new BookDetailFragment();
         fragment.setArguments(args);
 
         int id = R.id.container;
-        if(findViewById(R.id.right_container) != null){
+        if (findViewById(R.id.right_container) != null) {
             id = R.id.right_container;
         }
         getSupportFragmentManager().beginTransaction()
@@ -151,16 +162,37 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
     }
 
+    /**
+     * Called when an item in the navigation drawer is selected.
+     *
+     * @param rawResult
+     */
+    @Override
+    public void onScanResult(Result rawResult) {
+        int id = R.id.container;
+        if (findViewById(R.id.right_container) != null) {
+            id = R.id.right_container;
+        }
+        AddBookFragment fragment = new AddBookFragment();
+        Bundle arguments = new Bundle();
+        arguments.putString(SCAN_RESULT, rawResult.getContents());
+        fragment.setArguments(arguments);
+        getSupportFragmentManager().beginTransaction()
+                .replace(id, fragment)
+                .addToBackStack("Book Detail")
+                .commit();
+    }
+
     private class MessageReciever extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getStringExtra(MESSAGE_KEY)!=null){
+            if (intent.getStringExtra(MESSAGE_KEY) != null) {
                 Toast.makeText(MainActivity.this, intent.getStringExtra(MESSAGE_KEY), Toast.LENGTH_LONG).show();
             }
         }
     }
 
-    public void goBack(View view){
+    public void goBack(View view) {
         getSupportFragmentManager().popBackStack();
     }
 
@@ -172,7 +204,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
     @Override
     public void onBackPressed() {
-        if(getSupportFragmentManager().getBackStackEntryCount()<2){
+        if (getSupportFragmentManager().getBackStackEntryCount() < 2) {
             finish();
         }
         super.onBackPressed();

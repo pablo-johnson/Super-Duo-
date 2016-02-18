@@ -17,6 +17,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.zxing.Result;
+
 import it.jaschke.alexandria.R;
 import it.jaschke.alexandria.api.Callback;
 import it.jaschke.alexandria.ui.fragments.AboutFragment;
@@ -25,7 +27,6 @@ import it.jaschke.alexandria.ui.fragments.BookDetailFragment;
 import it.jaschke.alexandria.ui.fragments.ListOfBooksFragment;
 import it.jaschke.alexandria.ui.fragments.NavigationDrawerFragment;
 import it.jaschke.alexandria.ui.fragments.ScannerFragment;
-import me.dm7.barcodescanner.zbar.Result;
 
 
 public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks, Callback, ScannerFragment.ScannerCallback {
@@ -93,7 +94,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
         fragmentManager.beginTransaction()
                 .replace(R.id.container, nextFragment)
-                .addToBackStack((String) title)
                 .commit();
     }
 
@@ -175,7 +175,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         }
         AddBookFragment fragment = new AddBookFragment();
         Bundle arguments = new Bundle();
-        arguments.putString(SCAN_RESULT, rawResult.getContents());
+        arguments.putString(SCAN_RESULT, rawResult.getText());
         fragment.setArguments(arguments);
         getSupportFragmentManager().beginTransaction()
                 .replace(id, fragment)

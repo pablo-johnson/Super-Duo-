@@ -75,8 +75,8 @@
 
         <ImageView
             android:id="@+id/bookCover"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="120dp"
+            android:layout_height="180dp"
             android:layout_alignLeft="@+id/eancontainer"
             android:layout_alignStart="@+id/eancontainer"
             android:layout_alignTop="@+id/authors"
@@ -88,7 +88,7 @@
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/eancontainer"
             android:layout_alignStart="@+id/eancontainer"
-            android:layout_below="@+id/bookCover"
+            android:layout_below="@id/bookCover"
             android:layout_marginTop="20dp"
             android:textSize="@dimen/small_fontsize" />
 

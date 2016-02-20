@@ -81,21 +81,18 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             default:
             case 0:
                 nextFragment = new ListOfBooksFragment();
-                ft.addToBackStack(null);
                 break;
             case 1:
                 nextFragment = new AddBookFragment();
-                ft.addToBackStack(null);
                 break;
             case 2:
                 nextFragment = new AboutFragment();
-                ft.addToBackStack(null);
                 break;
             case AddBookFragment.OPEN_SCANNER:
                 nextFragment = new ScannerFragment();
 
         }
-        ft.replace(R.id.container, nextFragment).commit();
+        ft.addToBackStack(null).replace(R.id.container, nextFragment).commit();
     }
 
     public void setTitle(int titleId) {
@@ -202,6 +199,4 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 & Configuration.SCREENLAYOUT_SIZE_MASK)
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
-
-
 }

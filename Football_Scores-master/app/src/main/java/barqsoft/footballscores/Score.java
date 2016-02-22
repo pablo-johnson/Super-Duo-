@@ -18,13 +18,13 @@ public class Score {
     private int awayCrestImageResource;
 
     public Score(Cursor cursor) {
-        homeName = cursor.getString(ScoresAdapter.COL_HOME);
-        awayName = cursor.getString(ScoresAdapter.COL_AWAY);
-        date = cursor.getString(ScoresAdapter.COL_DATE);
-        score = Utilies.getScores(cursor.getInt(ScoresAdapter.COL_HOME_GOALS), cursor.getInt(ScoresAdapter.COL_AWAY_GOALS));
-        matchId = cursor.getDouble(ScoresAdapter.COL_ID);
-        homeCrestImageResource = Utilies.getTeamCrestByTeamName(cursor.getString(ScoresAdapter.COL_HOME));
-        awayCrestImageResource = Utilies.getTeamCrestByTeamName(cursor.getString(ScoresAdapter.COL_AWAY));
+        homeName = cursor.getString(MyScoresAdapter.COL_HOME);
+        awayName = cursor.getString(MyScoresAdapter.COL_AWAY);
+        date = cursor.getString(MyScoresAdapter.COL_DATE);
+        score = Utilies.getScores(cursor.getInt(MyScoresAdapter.COL_HOME_GOALS), cursor.getInt(MyScoresAdapter.COL_AWAY_GOALS));
+        matchId = cursor.getDouble(MyScoresAdapter.COL_ID);
+        homeCrestImageResource = Utilies.getTeamCrestByTeamName(cursor.getString(MyScoresAdapter.COL_HOME));
+        awayCrestImageResource = Utilies.getTeamCrestByTeamName(cursor.getString(MyScoresAdapter.COL_AWAY));
     }
 
     public String getHomeName() {

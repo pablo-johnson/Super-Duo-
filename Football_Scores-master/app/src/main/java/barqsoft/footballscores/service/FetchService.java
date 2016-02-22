@@ -29,11 +29,11 @@ import barqsoft.footballscores.R;
 /**
  * Created by yehya khaled on 3/2/2015.
  */
-public class MyFetchService extends IntentService {
-    public static final String LOG_TAG = "MyFetchService";
+public class FetchService extends IntentService {
+    public static final String LOG_TAG = "FetchService";
 
-    public MyFetchService() {
-        super("MyFetchService");
+    public FetchService() {
+        super("FetchService");
     }
 
     @Override

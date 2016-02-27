@@ -142,9 +142,10 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     }
 
     @Override
-    public void onItemSelected(String ean) {
+    public void onItemSelected(String ean, String title) {
         Bundle args = new Bundle();
         args.putString(BookDetailFragment.EAN_KEY, ean);
+        args.putString(BookDetailFragment.TITLE_KEY, title);
 
         BookDetailFragment fragment = new BookDetailFragment();
         fragment.setArguments(args);

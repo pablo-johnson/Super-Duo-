@@ -29,6 +29,7 @@ import it.jaschke.alexandria.ui.activities.MainActivity;
 public class BookDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String EAN_KEY = "EAN";
+    public static final String TITLE_KEY = "TITLE";
     private final int LOADER_ID = 10;
     private View rootView;
     private String ean;
@@ -50,7 +51,6 @@ public class BookDetailFragment extends Fragment implements LoaderManager.Loader
         Bundle arguments = getArguments();
         if (arguments != null) {
             ean = arguments.getString(BookDetailFragment.EAN_KEY);
-            getLoaderManager().restartLoader(LOADER_ID, null, this);
         }
 
         rootView = inflater.inflate(R.layout.fragment_full_book, container, false);
@@ -131,14 +131,13 @@ public class BookDetailFragment extends Fragment implements LoaderManager.Loader
 
         String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
         ImageView imageView = (ImageView) rootView.findViewById(R.id.fullBookCover);
-        if ((imgUrl != null) && Patterns.WEB_URL.matcher(imgUrl).matches()) {
+        if (imgUrl != null) {
             Glide.with(getActivity())
                     .load(imgUrl)
                     .placeholder(R.drawable.ic_launcher)
+                    .error(R.drawable.ic_launcher)
                     .into(imageView);
             imageView.setVisibility(View.VISIBLE);
-        } else {
-            imageView.setVisibility(View.GONE);
         }
 
         String categories = data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));

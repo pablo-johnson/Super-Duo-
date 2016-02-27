@@ -19,6 +19,7 @@ public class MyAppWidgetProvider extends AppWidgetProvider {
 
     public static final String TOAST_ACTION = "toastAction";
     public static final String EXTRA_ITEM = "extraItemAction";
+    private static final String OPEN_APP_ACTION = "openApp";
 
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         ComponentName thisWidget = new ComponentName(context, MyAppWidgetProvider.class);
@@ -37,11 +38,11 @@ public class MyAppWidgetProvider extends AppWidgetProvider {
             remoteViews.setRemoteAdapter(widgetId, R.id.scoreListView, intent);
             remoteViews.setEmptyView(R.id.emptyView, R.id.scoreListView);
 
-            Intent toastIntent = new Intent(context, MyAppWidgetProvider.class);
-            toastIntent.setAction(MyAppWidgetProvider.TOAST_ACTION);
-            toastIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+            Intent newIntent = new Intent(context, MyAppWidgetProvider.class);
+            newIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+            newIntent.setAction(OPEN_APP_ACTION);
             intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-            PendingIntent toastPendingIntent = PendingIntent.getBroadcast(context, 0, toastIntent,
+            PendingIntent toastPendingIntent = PendingIntent.getBroadcast(context, 0, newIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT);
             remoteViews.setPendingIntentTemplate(R.id.scoreListView, toastPendingIntent);
 
@@ -57,6 +58,10 @@ public class MyAppWidgetProvider extends AppWidgetProvider {
                     AppWidgetManager.INVALID_APPWIDGET_ID);
             int viewIndex = intent.getIntExtra(EXTRA_ITEM, 0);
             Toast.makeText(context, "Touched view " + viewIndex + " : " + appWidgetId, Toast.LENGTH_SHORT).show();
+        } else if (intent.getAction().equals(OPEN_APP_ACTION)) {
+            Intent newIntent = new Intent(context, MainActivity.class);
+            newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(newIntent);
         }
         super.onReceive(context, intent);
     }
